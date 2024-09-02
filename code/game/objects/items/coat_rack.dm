@@ -3,6 +3,7 @@
  * Stores your winter coats
  * Cannot be picked up
  */
+
 /obj/item/coat_rack
 	name = "coat rack"
 	desc = "A nifty rack for storing your winter clothing."
@@ -13,6 +14,10 @@
 	slowdown = 1
 	item_flags = SLOWS_WHILE_IN_HAND
 	pass_flags = NONE
+	greyscale_config = /datum/greyscale_config/coat_rack
+	greyscale_colors = "#646464#646464#646464#646464"
+	var/original_greyscale_colors_length
+	var/default_color = "#646464"
 
 /obj/item/coat_rack/proc/populate_contents()
 	return
@@ -22,25 +27,39 @@
 	create_storage(storage_type = /datum/storage/coat_rack)
 	populate_contents()
 	register_context()
+	original_greyscale_colors_length = length(greyscale_colors)
 
 /obj/item/coat_rack/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
 	context[SCREENTIP_CONTEXT_LMB] = "Take a coat"
 	return CONTEXTUAL_SCREENTIP_SET
 
-/obj/item/coat_rack/update_overlays()
+/obj/item/coat_rack/update_icon_state()
 	. = ..()
-
-	var/obj/item/clothing/suit/hooded/wintercoat/wintercoat = "coat"
 	switch(contents.len)
+		if(0)
+			icon_state = "coat_rack"
 		if(1)
-			. += mutable_appearance(icon = initial(icon), icon_state = "[wintercoat]_1")
+			icon_state = "coat_rack_1"
 		if(2)
-			. += mutable_appearance(icon = initial(icon), icon_state = "[wintercoat]_2")
+			icon_state = "coat_rack_2"
 		if(3)
-			. += mutable_appearance(icon = initial(icon), icon_state = "[wintercoat]_3")
+			icon_state = "coat_rack_3"
 		if(4)
-			. += mutable_appearance(icon = initial(icon), icon_state = "[wintercoat]_4")
+			icon_state = "coat_rack_4"
+
+	update_colors()
+	set_greyscale(greyscale_colors, greyscale_config)
+
+/obj/item/coat_rack/proc/update_colors()
+	greyscale_colors = ""
+	for (var/obj/item/clothing/suit/hooded/wintercoat/wintercoat as anything in contents)
+		var/color = wintercoat.color
+		if (color == null)
+			color = default_color
+		greyscale_colors += color
+	while(length(greyscale_colors) < original_greyscale_colors_length) // 28 being length of the full greyscale string
+		greyscale_colors += default_color
 
 /obj/item/coat_rack/attack_hand(mob/living/user)
 	if(!user.can_perform_action(src, NEED_HANDS))

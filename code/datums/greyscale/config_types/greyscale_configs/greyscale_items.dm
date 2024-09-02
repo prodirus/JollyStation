@@ -340,3 +340,8 @@
 	name = "Piggy Bank"
 	icon_file = 'icons/obj/fluff/general.dmi'
 	json_config = 'code/datums/greyscale/json_configs/piggy_bank.json'
+
+/datum/greyscale_config/coat_rack
+	name = "Coat Rack"
+	icon_file = 'talestation_modules/icons/objects/coatrackdmi.dmi'
+	json_config = 'code/datums/greyscale/json_configs/coat_rack.json'
